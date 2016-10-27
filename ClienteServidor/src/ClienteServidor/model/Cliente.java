@@ -48,8 +48,8 @@ public class Cliente implements Runnable {
                 new Thread(entradaTask).start();
 
                 //saida.close();
-                //teclado.close();
-                //cliente.close();
+                //enviado.close();
+                //recebido.close();
             }
         } catch (IOException ex) {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);

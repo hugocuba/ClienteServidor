@@ -19,5 +19,8 @@ public class Main {
         Cliente cliente = new Cliente("127.0.0.1", 2000);
         new Thread(cliente).start();
         
+        Cliente cliente2 = new Cliente("127.0.0.1", 2000);
+        new Thread(cliente).start();
+        
     }
 }
