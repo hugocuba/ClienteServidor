@@ -20,6 +20,10 @@ public class Servidor implements Runnable {
     public Servidor(Integer porta) {
         this.porta = porta;
     }
+    
+    public void removeCliente(Socket cliente){
+        this.clients.remove(cliente);
+    }
 
     @Override
     public void run() {
@@ -32,9 +36,12 @@ public class Servidor implements Runnable {
                 while (!Thread.currentThread().isInterrupted()) {
                     ServidorJFrame.escreveChat("Esperando por conexões...\n");
                     Socket cliente = servidor.accept();
+                    ServidorJFrame.escreveChat("---------------------------\n");
                     ServidorJFrame.escreveChat("Nova conexão com o cliente " + cliente.getInetAddress().getHostAddress() + "\n");
+                   
                     this.clients.add(cliente);
-
+                    ServidorJFrame.escreveChat(clients.size() + " clientes conectados\n");
+                    
                     Runnable tc = () -> {
                         try {
                             Scanner s = new Scanner(cliente.getInputStream());
@@ -43,7 +50,8 @@ public class Servidor implements Runnable {
 
                                 for (Socket cli : this.clients) {
                                     PrintStream psm = new PrintStream(cli.getOutputStream());
-                                    psm.println(cli.getInetAddress().getHostAddress() + ": " + msg);
+                                    psm.println(cli.getInetAddress().getHostAddress()+ ": " + msg);
+                                    ServidorJFrame.escreveChat(cli.getInetAddress().getHostAddress() + "enviou uma mensagem");
                                 }
                             }
                             s.close();

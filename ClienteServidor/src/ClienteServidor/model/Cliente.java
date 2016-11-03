@@ -16,7 +16,8 @@ public class Cliente implements Runnable {
     private String ip;
     private Integer porta;
     private Socket cliente = null;
-    PrintStream saida;
+    private PrintStream saida;
+    private Boolean conexao = false;
 
     public Cliente(String ip, Integer porta) {
         this.ip = ip;
@@ -26,6 +27,10 @@ public class Cliente implements Runnable {
     public Socket getCliente(){
         return this.cliente;
     }
+    
+    public Boolean getConexao(){
+        return this.conexao;
+    }
 
     @Override
     public void run() {
@@ -33,9 +38,8 @@ public class Cliente implements Runnable {
             cliente = new Socket(ip, porta);
 
             if (cliente != null) {
-                ClienteJFrame.escreveChat("Conectado\n\n");
+                conexao = true;
                 
-                //Scanner enviado = new Scanner(msg.);
                 Scanner recebido = new Scanner(cliente.getInputStream());
 
                 saida = new PrintStream(cliente.getOutputStream());
@@ -46,18 +50,7 @@ public class Cliente implements Runnable {
                     }
                 };
 
-                //Runnable saidaTask = () -> {
-                //    while (enviado.hasNextLine()) {
-                //        saida.println(enviado.nextLine());
-                //    }
-                //};
-                
-                //new Thread(saidaTask).start();
                 new Thread(entradaTask).start();
-
-                //saida.close();
-                //enviado.close();
-                //recebido.close();
             }
         } catch (IOException ex) {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
