@@ -1,9 +1,12 @@
 package ClienteServidor.model;
 
+import ClienteServidor.view.ClienteJFrame;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,11 +15,16 @@ public class Cliente implements Runnable {
 
     private String ip;
     private Integer porta;
-    Socket cliente = null;
+    private Socket cliente = null;
+    PrintStream saida;
 
     public Cliente(String ip, Integer porta) {
         this.ip = ip;
         this.porta = porta;
+    }
+
+    public Socket getCliente(){
+        return this.cliente;
     }
 
     @Override
@@ -25,26 +33,26 @@ public class Cliente implements Runnable {
             cliente = new Socket(ip, porta);
 
             if (cliente != null) {
-                System.out.println("O cliente se conectou ao servidor!");
+                ClienteJFrame.escreveChat("Conectado\n\n");
                 
-                Scanner enviado = new Scanner(System.in);
+                //Scanner enviado = new Scanner(msg.);
                 Scanner recebido = new Scanner(cliente.getInputStream());
 
-                PrintStream saida = new PrintStream(cliente.getOutputStream());
+                saida = new PrintStream(cliente.getOutputStream());
                 
                 Runnable entradaTask = () -> {
                     while (recebido.hasNextLine()) {
-                        System.out.println(recebido.nextLine());
+                         ClienteJFrame.escreveChat(recebido.nextLine() + "\n");
                     }
                 };
 
-                Runnable saidaTask = () -> {
-                    while (enviado.hasNextLine()) {
-                        saida.println(enviado.nextLine());
-                    }
-                };
+                //Runnable saidaTask = () -> {
+                //    while (enviado.hasNextLine()) {
+                //        saida.println(enviado.nextLine());
+                //    }
+                //};
                 
-                new Thread(saidaTask).start();
+                //new Thread(saidaTask).start();
                 new Thread(entradaTask).start();
 
                 //saida.close();
@@ -54,5 +62,9 @@ public class Cliente implements Runnable {
         } catch (IOException ex) {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void enviar(String msg){
+        saida.println(msg);
     }
 }

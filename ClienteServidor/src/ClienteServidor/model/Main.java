@@ -12,15 +12,15 @@ package ClienteServidor.model;
 public class Main {
     public static void main(String[] args) {
         
-        Servidor servidor = new Servidor(2000);
-        Thread servidorT = new Thread(servidor);
-        servidorT.start();
+        //Servidor servidor = new Servidor(12345);
+        //Thread servidorT = new Thread(servidor);
+        //servidorT.start();
         
-        Cliente cliente = new Cliente("127.0.0.1", 2000);
+        Cliente cliente = new Cliente("127.0.0.1", 12345);
         new Thread(cliente).start();
         
-        Cliente cliente2 = new Cliente("127.0.0.1", 2000);
-        new Thread(cliente).start();
+        //Cliente cliente2 = new Cliente("127.0.0.1", 2000);
+        //new Thread(cliente).start();
         
     }
 }

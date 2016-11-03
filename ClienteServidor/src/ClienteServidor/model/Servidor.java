@@ -1,5 +1,6 @@
 package ClienteServidor.model;
 
+import ClienteServidor.view.ServidorJFrame;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.ServerSocket;
@@ -14,7 +15,7 @@ public class Servidor implements Runnable {
 
     private Integer porta;
     private ServerSocket servidor = null;
-    private List<PrintStream> clientes = new ArrayList<PrintStream>();
+    private List<Socket> clients = new ArrayList<>();
 
     public Servidor(Integer porta) {
         this.porta = porta;
@@ -26,20 +27,23 @@ public class Servidor implements Runnable {
             servidor = new ServerSocket(porta);
 
             if (servidor != null) {
-                System.out.println("Porta " + porta + " aberta");
+                ServidorJFrame.escreveChat("Porta " + porta + " aberta\n");
 
                 while (!Thread.currentThread().isInterrupted()) {
-                    System.out.println("Esperando...");
+                    ServidorJFrame.escreveChat("Esperando por conexões...\n");
                     Socket cliente = servidor.accept();
-                    System.out.println("Nova conexão com o cliente " + cliente.getInetAddress().getHostAddress());
-                    PrintStream ps = new PrintStream(cliente.getOutputStream());
-                    this.clientes.add(ps);
+                    ServidorJFrame.escreveChat("Nova conexão com o cliente " + cliente.getInetAddress().getHostAddress() + "\n");
+                    this.clients.add(cliente);
+
                     Runnable tc = () -> {
                         try {
                             Scanner s = new Scanner(cliente.getInputStream());
                             while (s.hasNextLine()) {
-                                for (PrintStream cli : this.clientes) {
-                                    cli.println(s.nextLine());
+                                String msg = s.nextLine();
+
+                                for (Socket cli : this.clients) {
+                                    PrintStream psm = new PrintStream(cli.getOutputStream());
+                                    psm.println(cli.getInetAddress().getHostAddress() + ": " + msg);
                                 }
                             }
                             s.close();
@@ -47,10 +51,11 @@ public class Servidor implements Runnable {
                             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     };
+
                     new Thread(tc).start();
                 }
 
-                System.out.println("Finalizado");
+                ServidorJFrame.escreveChat("Finalizado\n");
                 servidor.close();
             }
         } catch (IOException ex) {
