@@ -6,17 +6,48 @@
 package ClienteServidor.view;
 
 import ClienteServidor.model.Servidor;
+import java.awt.Color;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author a1502794
  */
 public class ServidorJFrame extends javax.swing.JFrame {
 
+    Servidor servidor = null;
+    Thread servidorT = null;
+
     /**
      * Creates new form Servidor
      */
     public ServidorJFrame() {
         initComponents();
+
+        Runnable t = () -> {
+            while (true) {
+                if (servidor != null) {
+                    if (servidor.getServidor() != null) {
+                        jLabelStatus.setText("ONLINE");
+                        jLabelStatus.setForeground(Color.green);
+                    } else {
+                        jLabelStatus.setText("OFFLINE");
+                        jLabelStatus.setForeground(Color.red);
+                    }
+                } else {
+                    jLabelStatus.setText("OFFLINE");
+                    jLabelStatus.setForeground(Color.red);
+                }
+                try {
+                    Thread.currentThread().sleep(2000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(ServidorJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+
+        new Thread(t).start();
     }
 
     /**
@@ -34,6 +65,7 @@ public class ServidorJFrame extends javax.swing.JFrame {
         jButtonIniciar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jLabelStatus = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -53,6 +85,8 @@ public class ServidorJFrame extends javax.swing.JFrame {
 
         jLabel3.setText("Porta:");
 
+        jLabelStatus.setText("...");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -63,6 +97,8 @@ public class ServidorJFrame extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelStatus)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -79,7 +115,8 @@ public class ServidorJFrame extends javax.swing.JFrame {
                     .addComponent(jTextFieldPorta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonIniciar)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel3))
+                    .addComponent(jLabel3)
+                    .addComponent(jLabelStatus))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -130,8 +167,8 @@ public class ServidorJFrame extends javax.swing.JFrame {
     }
 
     public void abreServidor(Integer porta) {
-        Servidor servidor = new Servidor(porta);
-        Thread servidorT = new Thread(servidor);
+        servidor = new Servidor(porta);
+        servidorT = new Thread(servidor);
         servidorT.start();
     }
 
@@ -139,13 +176,13 @@ public class ServidorJFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButtonIniciar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabelStatus;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextFieldPorta;
     private static javax.swing.JTextArea jTextTexto;
     // End of variables declaration//GEN-END:variables
 
-        
-    public static void escreveChat(String texto){
+    public static void escreveChat(String texto) {
         jTextTexto.append(texto);
     }
 }

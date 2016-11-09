@@ -24,6 +24,10 @@ public class Servidor implements Runnable {
     public void removeCliente(Socket cliente){
         this.clients.remove(cliente);
     }
+    
+    public ServerSocket getServidor(){
+        return this.servidor;
+    }
 
     @Override
     public void run() {

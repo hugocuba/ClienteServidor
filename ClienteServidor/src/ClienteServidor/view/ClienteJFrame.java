@@ -81,6 +81,11 @@ public class ClienteJFrame extends javax.swing.JFrame {
                 formWindowClosed(evt);
             }
         });
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Noto Sans", 1, 12)); // NOI18N
         jLabel1.setText("Cliente");
@@ -104,9 +109,20 @@ public class ClienteJFrame extends javax.swing.JFrame {
 
         jTextAreaChat.setColumns(20);
         jTextAreaChat.setRows(5);
+        jTextAreaChat.setFocusable(false);
         jScrollPane1.setViewportView(jTextAreaChat);
 
         jTextFieldLinha.setEnabled(false);
+        jTextFieldLinha.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldLinhaActionPerformed(evt);
+            }
+        });
+        jTextFieldLinha.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextFieldLinhaKeyPressed(evt);
+            }
+        });
 
         jButtonEnviar.setText("Enviar");
         jButtonEnviar.setEnabled(false);
@@ -191,6 +207,24 @@ public class ClienteJFrame extends javax.swing.JFrame {
         clienteT.stop();
     }//GEN-LAST:event_formWindowClosed
 
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+        
+    }//GEN-LAST:event_formKeyPressed
+
+    private void jTextFieldLinhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldLinhaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldLinhaActionPerformed
+
+    private void jTextFieldLinhaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldLinhaKeyPressed
+        if(evt.getKeyCode() == 10)
+            enviarMsg();
+    }//GEN-LAST:event_jTextFieldLinhaKeyPressed
+
+    private void enviarMsg(){
+        String linha = this.jTextFieldLinha.getText();
+        cliente.enviar(linha);
+        jTextFieldLinha.setText("");
+    }
     /**
      * @param args the command line arguments
      */
