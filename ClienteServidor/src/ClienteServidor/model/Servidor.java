@@ -47,11 +47,11 @@ public class Servidor implements Runnable {
                             Scanner s = new Scanner(cliente.getInputStream());
                             while (s.hasNextLine()) {
                                 String msg = s.nextLine();
-
+                                ServidorJFrame.escreveChat(cliente.getInetAddress().getHostAddress() + " - " + cliente.hashCode() + " enviou uma mensagem\n");
                                 for (Socket cli : this.clients) {
                                     PrintStream psm = new PrintStream(cli.getOutputStream());
-                                    psm.println(cli.getInetAddress().getHostAddress()+ ": " + msg);
-                                    ServidorJFrame.escreveChat(cli.getInetAddress().getHostAddress() + "enviou uma mensagem");
+                                    psm.println(cliente.getInetAddress().getHostAddress() + " - " + cliente.hashCode() + ": " + msg);
+                                    
                                 }
                             }
                             s.close();
